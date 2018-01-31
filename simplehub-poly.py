@@ -117,8 +117,10 @@ class Controller(polyinterface.Controller):
         if self._connect() is False:
             return False
         profile_upload = False
-        self._getActivities()
-        self._getDevices()
+        if self._getActivities() is False:
+            return False
+        if self._getDevices() is False:
+            return False
         LOGGER.debug('Discovery is complete.')
         self._disconnect()
 
