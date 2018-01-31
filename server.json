@@ -1,0 +1,21 @@
+{
+    "name": "SimpleControl",
+    "docs": "https://github.com/exking/udi-simplehub-poly",
+    "type": "python3",
+    "executable": "simplehub-poly.py",
+    "install": "install.sh",
+    "description": "SimpleControl integration for ISY",
+    "notice": "SimpleHub is required",
+    "shortPoll": "5",
+    "longPoll": "60",
+    "credits": [
+        {
+            "title": "SimpleControl integration for ISY",
+            "author": "xKing",
+            "version": "0.0.1",
+            "date": "January 31, 2018",
+            "source": "https://github.com/exking/udi-simplehub-poly",
+            "license": "https://raw.githubusercontent.com/exking/udi-simplehub-poly/master/LICENSE"
+        }
+    ]
+}
