@@ -9,7 +9,7 @@ import time
 import json
 
 from converters import id_2_addr
-from prof_template import write_profile
+from prof_template import write_profile, DEV_COMMANDS
 
 LOGGER = polyinterface.LOGGER
 
@@ -75,11 +75,9 @@ class Controller(polyinterface.Controller):
         rsp_data = res.read().decode("utf-8")
         if res.status == 200:
             LOGGER.debug('Set activity ok: {}'.format(rsp_data))
-            self._disconnect()
             return True
         else:
             LOGGER.error('Set activity failed: {}'.format(rsp_data))
-            self._disconnect()
             return False
 
     def send_command(self, devid, command):
@@ -106,11 +104,9 @@ class Controller(polyinterface.Controller):
         rsp_data = res.read().decode("utf-8")
         if res.status == 200:
             LOGGER.debug('Send command ok: {}'.format(rsp_data))
-            self._disconnect()
             return True
         else:
             LOGGER.error('Send command failed: {}'.format(rsp_data))
-            self._disconnect()
             return False
 
     def discover(self, command=None):
@@ -232,6 +228,9 @@ class Controller(polyinterface.Controller):
         self._disconnect()
 
     def shortPoll(self):
+        if self.hub_conn is not None:
+            if (int(time.time()) - self.hub_conn_last_used) >= 5:
+                self._disconnect()
         for node in self.nodes:
             self.nodes[node].updateInfo()
             
@@ -241,14 +240,6 @@ class Controller(polyinterface.Controller):
     def query(self):
         for node in self.nodes:
             self.nodes[node].reportDrivers()
-
-    def longPoll(self):
-        pass
-        '''
-        if self.hub_conn is not None:
-            if (int(time.time()) - self.hub_conn_last_used) > 300:
-                self._disconnect()
-        '''
 
     id = 'SMPLHUB'
     commands = {'DISCOVER': discover}
@@ -319,23 +310,29 @@ class SCDevice(polyinterface.Node):
     def setPower(self, command):
         cmd = command.get('cmd')
         if cmd == 'DON':
-            self.controller.send_command(self.uuid, 'POWER ON')
             self.st = 2
         elif cmd == 'DOF':
-            self.controller.send_command(self.uuid, 'POWER OFF')
             self.st = 3
         elif cmd == 'PTOGGLE':
-            self.controller.send_command(self.uuid, 'POWER TOGGLE')
             self.st = 4
         else:
             LOGGER.error('Invalid command: {}'.format(cmd))
+            return False
+        self.controller.send_command(self.uuid, DEV_COMMANDS[self.st])
+        self.setDriver('ST', self.st)
+        return True
+
+    def sendCmd(self, command):
+        self.st = int(command.get('value'))
+        self.controller.send_command(self.uuid, DEV_COMMANDS[self.st])
         self.setDriver('ST', self.st)
 
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 25}
               ]
     id = 'DEVICE'
     commands = {
-                    'DON': setPower, 'DOF': setPower, 'PTOGGLE': setPower
+                    'DON': setPower, 'DOF': setPower, 'PTOGGLE': setPower,
+                    'SEND_CMD': sendCmd
                }
 
 

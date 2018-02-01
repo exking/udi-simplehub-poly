@@ -2,6 +2,34 @@ import os
 import zipfile
 
 
+DEV_COMMANDS = {
+    1: 'ENTER',
+    2: 'POWER ON',
+    3: 'POWER OFF',
+    4: 'POWER TOGGLE',
+    5: 'CHANNEL UP',
+    6: 'CHANNEL DOWN',
+    7: 'PAUSE',
+    8: 'PLAY',
+    9: 'RECORD',
+    10: 'DIGIT 0',
+    11: 'DIGIT 1',
+    12: 'DIGIT 2',
+    13: 'DIGIT 3',
+    14: 'DIGIT 4',
+    15: 'DIGIT 5',
+    16: 'DIGIT 6',
+    17: 'DIGIT 7',
+    18: 'DIGIT 8',
+    19: 'DIGIT 9',
+    20: 'STOP',
+    21: 'REVERSE',
+    22: 'FORWARD',
+    23: 'SKIP',
+    24: 'VOLUME UP',
+    25: 'VOLUME DOWN'
+}
+
 NODEDEF_HEADER = """<nodeDefs>
 
     <nodeDef id="SMPLHUB" nls="SHUB">
@@ -28,6 +56,9 @@ NODEDEF_HEADER = """<nodeDefs>
                 <cmd id="DON" />
                 <cmd id="DOF" />
                 <cmd id="PTOGGLE" />
+                <cmd id="SEND_CMD" init="ST" >
+                    <p id="" editor="DCMD" />
+                </cmd>
             </accepts>
         </cmds>
     </nodeDef>
@@ -53,20 +84,14 @@ ST-DEV-ST-NAME = Last command
 CMD-DEV-DON-NAME = Power On
 CMD-DEV-DOF-NAME = Power Off
 CMD-DEV-PTOGGLE-NAME = Power Toggle
+CMD-DEV-SEND_CMD-NAME = Send Command
 
-DCMD-1 = N/A
-DCMD-2 = Power On
-DCMD-3 = Power Off
-DCMD-4 = Power Toggle
 """
 
 NLS_FOOTER = """
 """
 
 EDITORS_HEADER = """<editors>
-  <editor id="DCMD">
-    <range uom="25" min="1" max="4" nls="DCMD" />
-  </editor>
 """
 
 EDITORS_FOOTER = """
@@ -97,6 +122,12 @@ ND-ROOM%d-ICON = GenericRspCtl
 EDITORS_TEMPL = """
   <editor id="R%dCMD">
     <range uom="25" min="%d" max="%d" nls="R%dACT" />
+  </editor>
+"""
+
+EDITORS_TEMPL_D = """
+  <editor id="DCMD">
+    <range uom="25" min="1" max="%d" nls="DCMD" />
   </editor>
 """
 
@@ -135,11 +166,14 @@ def write_profile(home=None):
 
     editors_file = open('profile/editor/editors.xml', 'w')
     editors_file.write(EDITORS_HEADER)
-
+    editors_file.write(EDITORS_TEMPL_D % len(DEV_COMMANDS))
     nodedef_file = open('profile/nodedef/nodedefs.xml', 'w')
     nodedef_file.write(NODEDEF_HEADER)
     nls_file = open('profile/nls/en_us.txt', 'w')
     nls_file.write(NLS_HEADER)
+
+    for dcmd_id, dcmd_name in DEV_COMMANDS.items():
+        nls_file.write('DCMD-%d = %s\n' % (dcmd_id, dcmd_name))
 
     if home is not None:
         for room_id, data in home['rooms'].items():
