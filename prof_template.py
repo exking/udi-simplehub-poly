@@ -141,22 +141,22 @@ def extract_index(json):
         return 0
 
 
-def write_nls(file, data):
-    file.write(NLS_ROOM_ND_TEMPL % (data['index'], data['name'], data['index']))
+def write_nls(file_ptr, data):
+    file_ptr.write(NLS_ROOM_ND_TEMPL % (data['index'], data['name'], data['index']))
     actarray = []
     for act_id, act_data in data['activities'].items():
-        actarray.append({ 'ridx': data['index'], 'idx': act_data['index'], 'name': act_data['name']})
+        actarray.append({'ridx': data['index'], 'idx': act_data['index'], 'name': act_data['name']})
         actarray.sort(key=extract_index)
     for nls in actarray:
-        file.write('R%dACT-%d = %s\n' % (nls['ridx'], nls['idx'], nls['name']))
+        file_ptr.write('R%dACT-%d = %s\n' % (nls['ridx'], nls['idx'], nls['name']))
 
 
-def write_room_nd(file, data):
-    file.write(NODEDEF_ROOM_TEMPL % (data['index'], data['index'], data['index']))
+def write_room_nd(file_ptr, data):
+    file_ptr.write(NODEDEF_ROOM_TEMPL % (data['index'], data['index'], data['index']))
 
 
-def write_editor(file, data):
-    file.write(EDITORS_TEMPL % (data['index'], 1, len(data['activities']), data['index']))
+def write_editor(file_ptr, data):
+    file_ptr.write(EDITORS_TEMPL % (data['index'], 1, len(data['activities']), data['index']))
 
 
 def write_profile(home=None):
