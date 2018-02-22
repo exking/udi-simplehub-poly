@@ -24,6 +24,6 @@ Once installed - make sure your SimpleHub is set to "Allow command from external
 
 Poly assumes that SimpleHub IP address never change, so it is recommended that you create an IP address reservation for SimpleHub device on your router.
 
-Please report any problems on the UDI user forum.
+Please report any problems on the [UDI user forum](https://forum.universal-devices.com/topic/23548-polyglot-v2-simplecontrol-nodeserver/).
 
 Thanks and good luck.
