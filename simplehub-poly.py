@@ -71,7 +71,11 @@ class Controller(polyinterface.Controller):
         except Exception as e:
             LOGGER.error('SimpleHub connection problem: {}'.format(e))
             return False
-        res = self.hub_conn.getresponse()
+        try:
+            res = self.hub_conn.getresponse()
+        except Exception as ex:
+            LOGGER.error('Set activity failed: {}'.format(ex))
+            return False
         rsp_data = res.read().decode("utf-8")
         if res.status == 200:
             LOGGER.debug('Set activity ok: {}'.format(rsp_data))
@@ -100,7 +104,11 @@ class Controller(polyinterface.Controller):
         except Exception as e:
             LOGGER.error('SimpleHub connection problem: {}'.format(e))
             return False
-        res = self.hub_conn.getresponse()
+        try:
+            res = self.hub_conn.getresponse()
+        except Exception as ex:
+            LOGGER.error('Send command failed: {}'.format(ex))
+            return False
         rsp_data = res.read().decode("utf-8")
         if res.status == 200:
             LOGGER.debug('Send command ok: {}'.format(rsp_data))
@@ -163,7 +171,11 @@ class Controller(polyinterface.Controller):
         except Exception as e:
             LOGGER.error('SimpleHub connection problem: {}'.format(e))
             return False
-        res = self.hub_conn.getresponse()
+        try:
+            res = self.hub_conn.getresponse()
+        except Exception as ex:
+            LOGGER.error('SimpleHub: activities - invalid response: {}'.format(ex))
+            return False
         if res.status != 200:
             LOGGER.error('SimpleHub: activities - invalid response: {}'.format(res.status))
             return False
@@ -205,7 +217,11 @@ class Controller(polyinterface.Controller):
         except Exception as e:
             LOGGER.error('SimpleHub connection problem: {}'.format(e))
             return False
-        res = self.hub_conn.getresponse()
+        try:
+            res = self.hub_conn.getresponse()
+        except Exception as ex:
+            LOGGER.error('SimpleHub: devices - invalid response: {}'.format(ex))
+            return False
         if res.status != 200:
             LOGGER.error('SimpleHub: devices - invalid response: {}'.format(res.status))
             return False
