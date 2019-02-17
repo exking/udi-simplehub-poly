@@ -12,7 +12,7 @@
         {
             "title": "SimpleControl integration for ISY",
             "author": "xKing",
-            "version": "0.0.1",
+            "version": "0.0.2",
             "date": "January 31, 2018",
             "source": "https://github.com/exking/udi-simplehub-poly",
             "license": "https://raw.githubusercontent.com/exking/udi-simplehub-poly/master/LICENSE"

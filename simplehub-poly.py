@@ -29,7 +29,7 @@ class Controller(polyinterface.Controller):
         LOGGER.info('Started SimpleHub controller')
         self.removeNoticesAll()
         if 'hubip' not in self.polyConfig['customParams']:
-            self.addNotice('Please create a custom configuration parameter "hubip" and assign it your SimpleHub IP address')
+            self.addNotice({'myNotice': 'Please create a custom configuration parameter "hubip" and assign it your SimpleHub IP address'})
         else:
             self.hub_ip = self.polyConfig['customParams']['hubip']
             self.discover()
@@ -231,6 +231,8 @@ class Controller(polyinterface.Controller):
             LOGGER.error('SimpleHub: unable to decode the devices response')
             return False
         for device in devices['data']:
+            if device['roomuuid'] not in self.data['rooms']:
+                continue
             if device['uuid'] not in self.data['rooms'][device['roomuuid']]['devices']:
                 dev = {
                         'name': device['name'],
